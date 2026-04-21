@@ -3,4 +3,5 @@ werkzeug
 flask
 bcrypt
 pymysql
+cryptography
 sqlalchemy

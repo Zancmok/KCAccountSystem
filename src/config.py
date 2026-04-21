@@ -17,6 +17,7 @@ DEBUG: bool = True
 
 # Database Config
 MYSQL_PORT: int = 3306
+MYSQL_HOST: str = "mysql"
 MYSQL_DATABASE: str = "database"
 MYSQL_ROOT_PASSWORD: str = "admin"
 MYSQL_PASSWORD: str = "admin"

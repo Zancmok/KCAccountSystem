@@ -6,6 +6,7 @@ from .BaseModel import BaseModel
 
 if TYPE_CHECKING:
     from .RefreshToken import RefreshToken
+    from .Client import Client
 
 
 class User(BaseModel):
@@ -44,3 +45,4 @@ class User(BaseModel):
     last_login: Mapped[datetime] = mapped_column(DateTime)
 
     refresh_tokens: Mapped[list["RefreshToken"]] = relationship(back_populates="user")
+    clients: Mapped[list["Client"]] = relationship(back_populates="user")
