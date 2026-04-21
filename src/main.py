@@ -1,8 +1,10 @@
 from flask import Flask
 import config
 import database.database
+
 import routes.common
 import routes.pages
+import routes.user_auth
 
 
 def main() -> None:
@@ -14,6 +16,7 @@ def main() -> None:
     # Blueprints
     app.register_blueprint(routes.common.blueprint)
     app.register_blueprint(routes.pages.blueprint)
+    app.register_blueprint(routes.user_auth.blueprint)
 
     database.database.initialize()
     app.run(
