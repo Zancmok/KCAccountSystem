@@ -23,3 +23,6 @@ MYSQL_ROOT_PASSWORD: str = "admin"
 MYSQL_PASSWORD: str = "admin"
 MYSQL_USER: str = "admin"
 DATABASE_RECONNECTION_TIMEOUT: float = 1.0
+
+# Account Config
+DEFAULT_PFP_URL: str = "https://cdn.discordapp.com/embed/avatars/0.png"
