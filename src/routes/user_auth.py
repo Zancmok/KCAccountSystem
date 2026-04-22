@@ -3,6 +3,7 @@ import re
 from re import Pattern
 from errors import UserAlreadyExistsError, InvalidCretentialsError
 import services.auth_service as auth_service
+from services.AccessToken import AccessToken
 from flask import Blueprint, jsonify, request, redirect
 from flask.typing import ResponseReturnValue
 from HTTPCode import HTTPCode
@@ -65,7 +66,6 @@ def signup() -> ResponseReturnValue:
 
     return jsonify({
         "success": True,
-        "reason": ""
     }), HTTPCode.CREATED
 
 
@@ -93,12 +93,17 @@ def login() -> ResponseReturnValue:
     password: str
 
     try:
-        auth_service.try_login(
+        access_token: AccessToken = auth_service.try_login(
             username=username,
             password=password
         )
-    except InvalidCretentialsError:
+    except InvalidCretentialsError as e:
         return jsonify({
             "success": False,
-            "reason": "Invalid credentials!"
+            "reason": str(e)
         })
+    
+    return jsonify({
+        "success": True,
+        "access_token": access_token.code
+    })

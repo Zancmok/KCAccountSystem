@@ -26,3 +26,6 @@ DATABASE_RECONNECTION_TIMEOUT: float = 1.0
 
 # Account Config
 DEFAULT_PFP_URL: str = "https://cdn.discordapp.com/embed/avatars/0.png"
+
+# Access Tokens
+ACCESS_TOKEN_LENGTH: int = 60
