@@ -1,6 +1,8 @@
 from typing import Any
 import re
 from re import Pattern
+from errors import UserAlreadyExistsError, InvalidCretentialsError
+import services.auth_service as auth_service
 from flask import Blueprint, jsonify, request, redirect
 from flask.typing import ResponseReturnValue
 from HTTPCode import HTTPCode
@@ -50,7 +52,53 @@ def signup() -> ResponseReturnValue:
             "reason": "Password does not follow the naming convention!"
         }), HTTPCode.BAD_REQUEST
 
+    try:
+        auth_service.create_user(
+            username=username,
+            password=password
+        )
+    except UserAlreadyExistsError:
+        return jsonify({
+            "success": False,
+            "reason": "A user with this username already exists!"
+        }), HTTPCode.CONFLICT
+
     return jsonify({
         "success": True,
         "reason": ""
     }), HTTPCode.CREATED
+
+
+@blueprint.route("/login", methods=["POST"])
+def login() -> ResponseReturnValue:
+    if not isinstance(json_data := request.get_json(silent=True), dict):
+        return jsonify({
+            "success": False,
+            "reason": "'json_data' not provided!"
+        }), HTTPCode.BAD_REQUEST
+    json_data: dict[str, Any]
+
+    if not ((username := json_data.get("username")) and isinstance(username, str)):
+        return jsonify({
+            "success": False,
+            "reason": "'username' in 'json_data' must be of type string!"
+        }), HTTPCode.BAD_REQUEST
+    username: str
+
+    if not ((password := json_data.get("password")) and isinstance(password, str)):
+        return jsonify({
+            "success": False,
+            "reason": "'password' in 'json_data' must be of type string!"
+        }), HTTPCode.BAD_REQUEST
+    password: str
+
+    try:
+        auth_service.try_login(
+            username=username,
+            password=password
+        )
+    except InvalidCretentialsError:
+        return jsonify({
+            "success": False,
+            "reason": "Invalid credentials!"
+        })
