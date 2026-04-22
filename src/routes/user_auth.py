@@ -2,8 +2,7 @@ from typing import Any
 import re
 from re import Pattern
 from errors import UserAlreadyExistsError, InvalidCretentialsError
-import services.auth_service as auth_service
-from services.AccessToken import AccessToken
+from services.authentication import AccessCode, auth_service
 from flask import Blueprint, jsonify, request, redirect
 from flask.typing import ResponseReturnValue
 from HTTPCode import HTTPCode
@@ -93,7 +92,7 @@ def login() -> ResponseReturnValue:
     password: str
 
     try:
-        access_token: AccessToken = auth_service.try_login(
+        access_code: AccessCode = auth_service.try_login(
             username=username,
             password=password
         )
@@ -105,5 +104,22 @@ def login() -> ResponseReturnValue:
     
     return jsonify({
         "success": True,
-        "access_token": access_token.code
+        "access_code": access_code.code
     }), HTTPCode.OK
+
+
+@blueprint.route("/get-tokens", methods=["POST"])
+def get_tokens() -> ResponseReturnValue:
+    if not isinstance(json_data := request.get_json(silent=True), dict):
+        return jsonify({
+            "success": False,
+            "reason": "'json_data' not provided!"
+        }), HTTPCode.BAD_REQUEST
+    json_data: dict[str, Any]
+
+    if not ((access_code := json_data.get("access_code")) and isinstance(access_code, str)):
+        return jsonify({
+            "success": False,
+            "reason": "'access_code' in 'json_data' must be of type string!"
+        }), HTTPCode.BAD_REQUEST
+    access_code: str

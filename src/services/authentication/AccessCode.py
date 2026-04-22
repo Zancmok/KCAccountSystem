@@ -4,7 +4,7 @@ from database.models.User import User
 
 
 @dataclass
-class AccessToken:
+class AccessCode:
     code: str
     expires_at: datetime
     user: User
