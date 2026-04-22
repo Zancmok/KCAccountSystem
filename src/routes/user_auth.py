@@ -101,9 +101,9 @@ def login() -> ResponseReturnValue:
         return jsonify({
             "success": False,
             "reason": str(e)
-        })
+        }), HTTPCode.BAD_REQUEST
     
     return jsonify({
         "success": True,
         "access_token": access_token.code
-    })
+    }), HTTPCode.OK
